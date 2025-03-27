@@ -8,23 +8,16 @@ class Note(db.Model):
     data = db.Column(db.String(10000))
     date = db.Column(db.DateTime(timezone = True), default= func.now())
     user_id= db.Column(db.Integer, db.ForeignKey('user.id'))
-    
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    icon = db.Column(db.String(50), default='fas fa-tag')  # Font Awesome icon class
-    color = db.Column(db.String(7), default='#6c757d')  # Hex color code
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+
 
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     amount = db.Column(db.Float, nullable = False)  # Amount is required
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.Column(db.String(50), nullable = False)  # Category is required
     description = db.Column(db.String(200))  # Optional description
     timestamp = db.Column(db.DateTime(timezone = True), default = func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    category = db.relationship('Category', backref='expenses')
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
@@ -33,4 +26,3 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     notes = db.relationship('Note')
     expenses = db.relationship('Expense', backref='user')
-    categories = db.relationship('Category', backref='user')
